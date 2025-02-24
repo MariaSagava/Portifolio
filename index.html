@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta CEP - ViaCEP</title>
+    <link rel="stylesheet" href="index.css">
+  
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta CEP - ViaCEP</h1>
+        <input type="text" id="cep" placeholder="Digite o CEP" maxlength="8">
+        <button onclick="consultarCEP()">Buscar</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const resultadoDiv = document.getElementById('resultado');
+    
+        function consultarCEP() {
+            const cep = document.getElementById('cep').value;
+            const url = `https://viacep.com.br/ws/${cep}/json/`;
+    
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro na requisição`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.erro) {
+                        resultadoDiv.innerHTML = '<p style="color: red;">CEP não encontrado.</p>';
+                    } else {
+                        resultadoDiv.innerHTML = `
+                            <p><strong>CEP:</strong> ${data.cep}</p>
+                            <p><strong>Logradouro:</strong> ${data.logradouro}</p>
+                            <p><strong>Bairro:</strong> ${data.bairro}</p>
+                            <p><strong>Cidade:</strong> ${data.localidade}</p>
+                            <p><strong>Estado:</strong> ${data.uf}</p>
+                        `;
+                    }
+                    resultadoDiv.style.display = "block"; 
+                })
+                .catch(error => {
+                    resultadoDiv.innerHTML = `<p style="color: red;">informe um CEP válido</p>`;
+                    resultadoDiv.style.display = "block";
+                });
+        }
+    </script>
+    
+</body>
+</html>
+
+   
